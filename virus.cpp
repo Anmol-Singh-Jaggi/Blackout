@@ -62,11 +62,24 @@ static const vector<string> disableCommands =
 
 static string startTime, endTime, startDate, endDate;
 static bool enable;
+static string enableCommand, disableCommand;
+
+
+string CraftCommand( const bool& start, const size_t& device )
+{
+	string command;
+	command += schtasksCommon + "/TN \"" + ( enable ? "Enable " : "Disable " ) + devices[device] + "\" ";
+	command += "/ST " + ( start ? startTime : endTime );
+	command += ( ( start ? startDate.empty() : endDate.empty() ) ) ? "" : " /SD " + ( start ? startDate : endDate ) + " ";
+	command += "/TR \"" + ( enable ? enableCommand : disableCommand ) + "\"";
+
+	return command;
+}
 
 void ScheduleTask( const size_t& device )
 {
-	const string& enableCommand = enableCommands[device];
-	const string& disableCommand = disableCommands[device];
+	enableCommand = enableCommands[device];
+	disableCommand = disableCommands[device];
 
 	// The list of commands to execute finally
 	vector<string> commands;
@@ -90,21 +103,13 @@ void ScheduleTask( const size_t& device )
 		if ( enable )
 		{
 			string command;
-			command += schtasksCommon + "/TN \"Enable " + devices[device] + "\" ";
-			command += "/ST " + startTime;
-			command += ( ( startDate.empty() ) ? "" : " /SD " + startDate ) + " ";
-			command += "/TR \"" + enableCommand + "\"";
-
+			command = CraftCommand( true, device );
 			commands.push_back( command );
 
 			// Disable at end time
 			if ( !endTime.empty() )
 			{
-				command = schtasksCommon + "/TN \"Disable " + devices[device] + "\" ";
-				command += "/ST " + endTime;
-				command += ( ( endDate.empty() ) ? "" : " /SD " + endDate ) + " ";
-				command += "/TR \"" + disableCommand + "\"";
-
+				command = CraftCommand( false, device );
 				commands.push_back( command );
 			}
 		}
@@ -112,21 +117,13 @@ void ScheduleTask( const size_t& device )
 		else
 		{
 			string command;
-			command += schtasksCommon + "/TN \"Disable " + devices[device] + "\" ";
-			command += "/ST " + startTime;
-			command += ( ( startDate.empty() ) ? "" : " /SD " + startDate ) + " ";
-			command += "/TR \"" + disableCommand + "\"";
-
+			command = CraftCommand( true, device );
 			commands.push_back( command );
 
 			// Enable at end time
 			if ( !endTime.empty() )
 			{
-				command = schtasksCommon + "/TN \"Enable " + devices[device] + "\" ";
-				command += "/ST " + endTime;
-				command += ( ( endDate.empty() ) ? "" : " /SD " + endDate ) + " ";
-				command += "/TR \"" + enableCommand + "\"";
-
+				command = CraftCommand( false, device );
 				commands.push_back( command );
 			}
 		}
@@ -153,7 +150,7 @@ int main()
 
 	while ( ss >> option )
 	{
-		if ( option >= devices.size() )
+		if ( option > devices.size() )
 		{
 			cout << "Wrong option!!\n";
 			return -1;
