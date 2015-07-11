@@ -3,7 +3,7 @@
 An application which can start/stop devices/services programmatically.
 
 **Requirements -:**
- - A compiler supporting C++ 11 or greater.
+ - A compiler supporting C++11.
 
 **Platforms supported -:**
  - Windows 7 or greater.
