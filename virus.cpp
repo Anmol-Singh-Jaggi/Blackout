@@ -65,6 +65,7 @@ static bool enable;
 static string enableCommand, disableCommand;
 
 
+// Make the command string.
 string CraftCommand( const bool& start, const size_t& device )
 {
 	string command;
@@ -155,6 +156,7 @@ int main()
 			cout << "Wrong option!!\n";
 			return -1;
 		}
+		// Multiple devices can be selected simultaneously
 		options.push_back( option - 1 );
 	}
 
@@ -180,9 +182,9 @@ int main()
 
 	}
 
-	for ( const auto& it : options )
+	for ( const auto& option : options )
 	{
-		ScheduleTask( it );
+		ScheduleTask( option );
 	}
 
 }
