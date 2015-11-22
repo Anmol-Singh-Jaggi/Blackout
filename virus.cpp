@@ -153,7 +153,7 @@ int main()
 	{
 		if ( option > devices.size() )
 		{
-			cout << "Wrong option!!\n";
+			cout << "Invalid option!!\n";
 			return -1;
 		}
 		// Multiple devices can be selected simultaneously
