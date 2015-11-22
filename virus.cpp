@@ -16,7 +16,7 @@ string ToString( const T& obj )
 }
 
 // Prefix common to all the command strings
-static const string schtasksCommon = "schtasks /create /F /RL HIGHEST /SC ONCE ";
+static const string schtasksCommonPrefix = "schtasks /create /F /RL HIGHEST /SC ONCE ";
 
 static const string USB_ENABLE_COMMAND = "REG ADD HKLM\\System\\CurrentControlSet\\Services\\UsbStor /f /v Start /t REG_DWORD /d 3";
 static const string USB_DISABLE_COMMAND = "REG ADD HKLM\\System\\CurrentControlSet\\Services\\UsbStor /f /v Start /t REG_DWORD /d 4";
@@ -69,7 +69,7 @@ static string enableCommand, disableCommand;
 string CraftCommand( const bool& start, const size_t& device )
 {
 	string command;
-	command += schtasksCommon + "/TN \"" + ( enable ? "Enable " : "Disable " ) + devices[device] + "\" ";
+	command += schtasksCommonPrefix + "/TN \"" + ( enable ? "Enable " : "Disable " ) + devices[device] + "\" ";
 	command += "/ST " + ( start ? startTime : endTime );
 	command += ( ( start ? startDate.empty() : endDate.empty() ) ) ? "" : " /SD " + ( start ? startDate : endDate ) + " ";
 	command += "/TR \"" + ( enable ? enableCommand : disableCommand ) + "\"";
